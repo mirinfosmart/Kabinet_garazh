@@ -1,0 +1,35 @@
+{
+  "expo": {
+    "name": "Мій Гараж",
+    "slug": "garage-cabinet",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "icon": "./assets/icon.png",
+    "userInterfaceStyle": "light",
+    "splash": {
+      "image": "./assets/splash.png",
+      "resizeMode": "contain",
+      "backgroundColor": "#1A2540"
+    },
+    "android": {
+      "adaptiveIcon": {
+        "foregroundImage": "./assets/adaptive-icon.png",
+        "backgroundColor": "#1A2540"
+      },
+      "package": "ua.gsk.garage.cabinet",
+      "versionCode": 1,
+      "permissions": [
+        "INTERNET",
+        "ACCESS_NETWORK_STATE"
+      ]
+    },
+    "plugins": [
+      "expo-font"
+    ],
+    "extra": {
+      "eas": {
+        "projectId": "dc8ef81a-6eff-4cd9-8b9a-c6219f614caa"
+      }
+    }
+  }
+}
