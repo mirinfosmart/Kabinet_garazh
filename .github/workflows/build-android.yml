@@ -1,0 +1,64 @@
+name: 🏠 Garage App — Android Build
+
+on:
+  push:
+    branches:
+      - main          # автоматичний білд при push у main
+  workflow_dispatch:  # або вручну через кнопку на GitHub
+
+jobs:
+  build-android:
+    name: Build Android APK
+    runs-on: ubuntu-latest
+
+    steps:
+      # 1. Завантажуємо код з репозиторію
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      # 2. Встановлюємо Node.js
+      #    cache: 'npm' прибрано — він вимагає package-lock.json, якого немає.
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      # 3. Встановлюємо залежності проекту
+      #    npm install замість npm ci — npm ci потребує package-lock.json.
+      #    Коли згенеруєте і закомітите lock-файл, можна повернути npm ci + cache.
+      - name: Install dependencies
+        run: npm install
+
+      # 4. Встановлюємо Expo та EAS CLI
+      - name: Install Expo & EAS CLI
+        run: npm install -g expo-cli eas-cli
+
+      # 5. Окремий логін НЕ потрібен: EAS CLI авторизується автоматично
+      #    через змінну середовища EXPO_TOKEN (передається у кроки нижче).
+      #    Команда `eas login` не підтримує --non-interactive і лише ламає білд.
+
+      # 6. Збираємо APK (preview = локальний APK без Google Play)
+      - name: Build Android APK
+        run: eas build --platform android --profile preview --non-interactive
+        env:
+          EXPO_TOKEN: ${{ secrets.EXPO_TOKEN }}
+
+      # 7. Зберігаємо APK як артефакт GitHub (завантажується зі сторінки Actions)
+      - name: Download and upload APK artifact
+        run: |
+          # Отримуємо URL останнього білду
+          BUILD_URL=$(eas build:list --platform android --limit 1 --json --non-interactive | \
+            node -e "const d=require('fs').readFileSync('/dev/stdin','utf8'); \
+            console.log(JSON.parse(d)[0].artifacts.buildUrl)")
+          
+          echo "APK URL: $BUILD_URL"
+          curl -L "$BUILD_URL" -o garage-cabinet.apk
+        env:
+          EXPO_TOKEN: ${{ secrets.EXPO_TOKEN }}
+
+      - name: Upload APK to GitHub Artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: garage-cabinet-${{ github.sha }}
+          path: garage-cabinet.apk
+          retention-days: 30
