@@ -2,6 +2,7 @@
   "expo": {
     "name": "Мій Гараж",
     "slug": "garage-cabinet",
+    "owner": "mirinfosmarts-team",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
