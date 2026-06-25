@@ -6,6 +6,9 @@
     "version": "1.0.0",
     "orientation": "portrait",
     "userInterfaceStyle": "light",
+    "splash": {
+      "backgroundColor": "#1A2540"
+    },
     "android": {
       "package": "ua.gsk.garage.cabinet",
       "versionCode": 1,
